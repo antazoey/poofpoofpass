@@ -1,2 +1,3 @@
-# boondock
-A decentralized event ticketing and rewards service
+# Poof Poof Pass
+
+What are you waiting for? Pass the Poof Poofs.
