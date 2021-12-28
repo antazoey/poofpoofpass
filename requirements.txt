@@ -1,3 +1,4 @@
 eth-ape>=0.1.0b2
 pytest>=6.2.5,<7.0.0
 black>=21.5
+nft-utils==0.1.0

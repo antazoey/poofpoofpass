@@ -7,26 +7,28 @@ import "@openzeppelin/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/access/Ownable.sol";
 import "@openzeppelin/utils/Counters.sol";
 
-contract PoofPoof is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract PoofPoof is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
+    string internal baseURI;
 
-    constructor() ERC721("PoofPoof", "POOFPOOF") {}
+    constructor(string memory baseURI) ERC721("PoofPoof", "POOFPOOF") {
+        baseURI = baseURI;
+    }
 
-    function safeMint(address to) public onlyOwner {
-        _safeMint(to, _tokenIdCounter.current());
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    function safeMint(address to, string memory uri) public onlyOwner {
+        uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
@@ -39,14 +41,5 @@ contract PoofPoof is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         returns (string memory)
     {
         return super.tokenURI(tokenId);
-    }
-
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
     }
 }
