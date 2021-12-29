@@ -1,47 +1,40 @@
 from pathlib import Path
-from typing import Dict
 
 from ape import project
-from nft_utils import NFT
-from utils import get_account, get_nft_project_manager
-
-from scripts.utils import PROJECT_NAME
-
-COMPLETED_ARTWORK_DIRECTORY = Path("artwork")
-
-
-def create_nft(cid: str, index: int, attributes: Dict = None) -> NFT:
-    # TODO: Make this more interesting / Finalize
-    artwork_name = f"PoofPoof Number {index}"
-    attributes = attributes or {}
-    return NFT(image=cid, tokenID=index, name=artwork_name, attributes=attributes)
+from nft_utils import Project as NFTProject
+from utils import (
+    COMPLETED_ARTWORK_DIRECTORY,
+    PROJECT_NAME,
+    create_pinata_client,
+    get_account,
+    track_deployment,
+)
 
 
-def main():
-    # Select the account you want to use for deploying the smart contracts.
-    # NOTE: We prompt for the account early to fail earlier if there is not one.
+def deploy():
     account = get_account(prompt="Select an account to use.")
-
-    # The NFT project manager is the bridge between IPFS and our local project.
-    nft_project = get_nft_project_manager()
 
     # TODO: Generate the artwork and put the finishes results
     # in the COMPLETED_ARTWORK_DIRECTORY. Currently, we have a static
     # image in there as a placeholder.
 
+    # The NFT project manager is the bridge between IPFS and our local project.
+    # TODO: Set the 'nft_data_modifier' parameter to customize the NFT metadata.
+    pinata_client = create_pinata_client()
+    nft_project = NFTProject(PROJECT_NAME, pinata_client)
+
     # Deploy the artwork to IPFS. NOTE: If the artwork is already deployed,
     # it will use the existing hashes.
     content_hashes = nft_project.pin_artwork(COMPLETED_ARTWORK_DIRECTORY)
 
-    # Create the NFT metadata
-    token_id = 0
-    nft_data = []
-    for cid in content_hashes:
-        nft_metadata_dict = create_nft(cid, token_id)
-        nft_data.append(nft_metadata_dict)
-
-    # Deploy the NFT metadata to IPFS
-    metadata_directory_cid = nft_project.deploy_metadata(nft_data)
+    # Pin the metadata directory to IPFS
+    nft_metadata_list = nft_project.create_nft_data(content_hashes)
+    metadata_directory_cid = nft_project.pin_metadata(nft_metadata_list)
 
     # Deploy the smart contract.
-    account.deploy(project.PoofPoof, metadata_directory_cid)
+    contract = account.deploy(project.PoofPoof, metadata_directory_cid)
+    track_deployment(contract.address)
+
+
+def main():
+    deploy()

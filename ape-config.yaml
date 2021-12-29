@@ -1,5 +1,6 @@
 plugins:
   - name: solidity
+# - name: keyring
 
 dependencies:
   open_zeppelin: OpenZeppelin/openzeppelin-contracts@4.4.0
@@ -7,3 +8,7 @@ dependencies:
 solidity:
   import_remapping:
     - "@openzeppelin=open_zeppelin/contracts"
+  
+ethereum:
+  development:
+    default_provider: geth
