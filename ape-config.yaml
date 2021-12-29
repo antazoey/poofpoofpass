@@ -8,7 +8,3 @@ dependencies:
 solidity:
   import_remapping:
     - "@openzeppelin=open_zeppelin/contracts"
-  
-ethereum:
-  development:
-    default_provider: geth

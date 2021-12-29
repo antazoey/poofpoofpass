@@ -5,7 +5,9 @@ from typing import Dict, Optional
 from ape import accounts, networks
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
+from nft_utils import Project as NFTProject
 from pynata import create_pinata
+
 
 PROJECT_NAME = "poofpoof"
 DEPLOYMENT_MAP_PATH = Path("deployment_map.json")
@@ -62,8 +64,19 @@ def create_pinata_client():
 def get_deployment_address() -> Optional[str]:
     with open(DEPLOYMENT_MAP_PATH, "r") as map_file:
         map_data = json.load(map_file)
-    
+
     network = get_network_name()
     deployments = map_data.get(network, [])
     if deployments:
         return deployments[-1]
+
+
+def pin_everything() -> str:
+    pinata_client = create_pinata_client()
+    nft_project = NFTProject(PROJECT_NAME, pinata_client)
+    content_hash_map = nft_project.pin_artwork(COMPLETED_ARTWORK_DIRECTORY)
+    content_hashes = [f"ipfs://{cid}" for _, cid in content_hash_map.items()]
+    nft_metadata_list = nft_project.create_nft_data(content_hashes)
+    folder_cid = nft_project.pin_metadata(nft_metadata_list)
+    folder_cid = f"ipfs://{folder_cid}/"
+    return folder_cid

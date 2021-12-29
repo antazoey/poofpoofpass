@@ -11,14 +11,14 @@ contract PoofPoof is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-    string internal baseURI;
+    string public poofBaseURI;
 
     constructor(string memory baseURI) ERC721("PoofPoof", "POOFPOOF") {
-        baseURI = baseURI;
+        poofBaseURI = baseURI;
     }
 
     function _baseURI() internal view override returns (string memory) {
-        return baseURI;
+        return poofBaseURI;
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
