@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Optional
 
-from ape import accounts, networks
+from ape import accounts, networks, project
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
 from nft_utils import Project as NFTProject
@@ -59,16 +59,6 @@ def track_deployment(contract_address: str):
 
 def create_pinata_client():
     return create_pinata(PROJECT_NAME)
-
-
-def get_deployment_address() -> Optional[str]:
-    with open(DEPLOYMENT_MAP_PATH, "r") as map_file:
-        map_data = json.load(map_file)
-
-    network = get_network_name()
-    deployments = map_data.get(network, [])
-    if deployments:
-        return deployments[-1]
 
 
 def pin_everything() -> str:

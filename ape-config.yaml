@@ -8,3 +8,9 @@ dependencies:
 solidity:
   import_remapping:
     - "@openzeppelin=open_zeppelin/contracts"
+
+deployments:
+  ethereum:
+    rinkeby: 
+      PoofPoof:
+      - 0xc326C44728208F55e11AC24536b6AB207A4a9E03
