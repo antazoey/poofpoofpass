@@ -1,6 +1,5 @@
 plugins:
   - name: solidity
-# - name: keyring
 
 dependencies:
   open_zeppelin: OpenZeppelin/openzeppelin-contracts@4.4.0
@@ -12,5 +11,5 @@ solidity:
 deployments:
   ethereum:
     rinkeby: 
-      PoofPoof:
-      - 0xc326C44728208F55e11AC24536b6AB207A4a9E03
+    - contract_type: PoofPoof
+      address: 0xc326C44728208F55e11AC24536b6AB207A4a9E03dddd

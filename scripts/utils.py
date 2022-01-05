@@ -1,10 +1,12 @@
+import click
 import json
 from pathlib import Path
 from typing import Dict, Optional
 
-from ape import accounts, networks, project
+from ape import accounts, networks, config
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
+from ape.types import AddressType
 from nft_utils import Project as NFTProject
 from pynata import create_pinata
 
@@ -35,28 +37,6 @@ def get_deployment_map() -> Dict:
     return {}
 
 
-# TODO: Replace this once https://github.com/ApeWorX/ape/issues/374 is done.
-def track_deployment(contract_address: str):
-    current_network = get_network_name()
-
-    if current_network == "development":
-        # We don't track development deployments.
-        return
-
-    map_json = get_deployment_map()
-
-    if current_network in map_json:
-        map_json[current_network].append(contract_address)
-    else:
-        map_json[current_network] = [contract_address]
-
-    if DEPLOYMENT_MAP_PATH.exists():
-        DEPLOYMENT_MAP_PATH.unlink()
-
-    with open(str(DEPLOYMENT_MAP_PATH), "w") as json_file:
-        json.dump(map_json, json_file)
-
-
 def create_pinata_client():
     return create_pinata(PROJECT_NAME)
 
@@ -68,5 +48,14 @@ def pin_everything() -> str:
     content_hashes = [f"ipfs://{cid}" for _, cid in content_hash_map.items()]
     nft_metadata_list = nft_project.create_nft_data(content_hashes)
     folder_cid = nft_project.pin_metadata(nft_metadata_list)
-    folder_cid = f"ipfs://{folder_cid}/"
-    return folder_cid
+    return f"ipfs://{folder_cid}/"
+
+
+def get_latest_poofpoof_address() -> Optional[AddressType]:
+    network_name = get_network_name()
+    network_deployments = config.deployments["ethereum"].get(network_name) or []
+    if network_deployments:
+        return [d for d in network_deployments if d["contract_type"] == "PoofPoof"][0]["address"]
+    else:
+        click.echo(f"No address for network '{network_name}'.")
+        return None
