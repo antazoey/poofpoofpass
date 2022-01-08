@@ -2,7 +2,7 @@ import json
 from json.decoder import JSONDecodeError
 
 from utils import (
-    COMPLETED_ARTWORK_DIRECTORY,
+    get_artwork_file_paths,
     DEPLOYMENT_MAP_PATH,
     PROJECT_NAME,
     create_pinata_client,
@@ -13,7 +13,7 @@ def clean_pins():
     client = create_pinata_client()
     directory_pin = client.get_hash(PROJECT_NAME)
     image_pins = [
-        client.get_hash(p.name) for p in COMPLETED_ARTWORK_DIRECTORY.iterdir()
+        client.get_hash(p.name) for p in get_artwork_file_paths()
     ]
 
     client.unpin(directory_pin, ignore_errors=True)

@@ -12,4 +12,4 @@ deployments:
   ethereum:
     rinkeby: 
     - contract_type: PoofPoof
-      address: 0xc326C44728208F55e11AC24536b6AB207A4a9E03dddd
+      address: 0xc326C44728208F55e11AC24536b6AB207A4a9E03

@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 
 from pynata import create_pinata
-from nft_utils import Project as NFTProject
+from project_nft import NFTProject
 
 
 NAME = "poofpoof"

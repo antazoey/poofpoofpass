@@ -1,23 +1,15 @@
 import click
-from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional
 
 from ape import accounts, networks, config
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
 from ape.types import AddressType
-from nft_utils import Project as NFTProject
+from project_nft import NFTProject
 from pynata import create_pinata, Pinata
 
 
 PROJECT_NAME = "poofpoof"
-COMPLETED_ARTWORK_DIRECTORY = Path("artwork")
-
-
-# TODO: Remove once Ape supports "address book".
-_ADDRESS_BOOK = {
-    "lester": "0x4e3b9a9f52d66E62f596A7b8A258Aff9AeeB15C2"
-}
 
 
 def get_account(prompt: Optional[str]=None) -> AccountAPI:
@@ -74,7 +66,7 @@ def pin_everything() -> str:
 
     pinata_client = create_pinata_client()
     nft_project = NFTProject(PROJECT_NAME, pinata_client)
-    content_hash_map = nft_project.pin_artwork(COMPLETED_ARTWORK_DIRECTORY)
+    content_hash_map = nft_project.pin_artwork()
     content_hashes = [f"ipfs://{cid}" for _, cid in content_hash_map.items()]
     nft_metadata_list = nft_project.create_nft_data(content_hashes)
     folder_cid = nft_project.pin_metadata(nft_metadata_list)
@@ -96,3 +88,19 @@ def get_poofpoof_address() -> Optional[AddressType]:
         return [d for d in network_deployments if d["contract_type"] == "PoofPoof"][0]["address"]
     else:
         click.echo(f"No address for network '{network_name}'.", err=True)
+
+
+def get_artwork_file_paths():
+    return 
+
+
+def get_token_receivers(token_id: int) -> Iterator[str]:
+    """
+    Get the address of the next token receiver
+    """
+    # TODO: Figure out how to populate token receivers list.
+    _ = token_id
+    receivers = {
+        "lester": "0x4e3b9a9f52d66E62f596A7b8A258Aff9AeeB15C2"
+    }
+    yield from receivers.values()

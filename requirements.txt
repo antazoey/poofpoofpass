@@ -1,4 +1,8 @@
 eth-ape>=0.1.0b2
 pytest>=6.2.5,<7.0.0
 black>=21.5
-nft-utils==0.1.0
+project-nft==0.1.0a1
+pynata==0.1.0a1
+requests==2.27.1
+Flask==2.0.2
+htmlmin==0.1.12
