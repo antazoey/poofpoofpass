@@ -1,22 +1,39 @@
 import click
-import json
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from ape import accounts, networks, config
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
 from ape.types import AddressType
 from nft_utils import Project as NFTProject
-from pynata import create_pinata
+from pynata import create_pinata, Pinata
 
 
 PROJECT_NAME = "poofpoof"
-DEPLOYMENT_MAP_PATH = Path("deployment_map.json")
 COMPLETED_ARTWORK_DIRECTORY = Path("artwork")
 
 
-def get_account(prompt=None) -> AccountAPI:
+# TODO: Remove once Ape supports "address book".
+_ADDRESS_BOOK = {
+    "lester": "0x4e3b9a9f52d66E62f596A7b8A258Aff9AeeB15C2"
+}
+
+
+def get_account(prompt: Optional[str]=None) -> AccountAPI:
+    """
+    Get an account. If in a development environment, returns
+    ``test_accounts[0]``. Otherwise, prompts the user to select
+    one of their accounts.
+
+    Args:
+        prompt (Optional[str]): The prompt to display to the user
+          when selecting an account.
+    
+    Returns:
+        ``AccountAPI``: The selected account (``ape`` class).
+    """
+
     prompt = prompt or "Select an account"
     if get_network_name() == "development":
         return accounts.test_accounts[0]
@@ -25,23 +42,36 @@ def get_account(prompt=None) -> AccountAPI:
 
 
 def get_network_name() -> str:
+    """
+    Get the currently connected network name.
+
+    Returns:
+        str: The name of the network.
+    """
+
     return networks.active_provider.network.name
 
 
-def get_deployment_map() -> Dict:
-    map_json_file = DEPLOYMENT_MAP_PATH
-    if map_json_file.exists():
-        with open(map_json_file, "r") as json_file:
-            return json.load(json_file)
+def create_pinata_client() -> Pinata:
+    """
+    Get the client that interacts with ``pinata``.
 
-    return {}
+    Returns:
+        ``Pinata``
+    """
 
-
-def create_pinata_client():
     return create_pinata(PROJECT_NAME)
 
 
 def pin_everything() -> str:
+    """
+    Pin all the artwork to IPFS via ``pinata``, including both the images
+    and the metadata directory.
+
+    Returns:
+        str: The metadata directory CID from IPFS.
+    """
+
     pinata_client = create_pinata_client()
     nft_project = NFTProject(PROJECT_NAME, pinata_client)
     content_hash_map = nft_project.pin_artwork(COMPLETED_ARTWORK_DIRECTORY)
@@ -51,11 +81,18 @@ def pin_everything() -> str:
     return f"ipfs://{folder_cid}/"
 
 
-def get_latest_poofpoof_address() -> Optional[AddressType]:
+def get_poofpoof_address() -> Optional[AddressType]:
+    """
+    Get the shared address of the ``PoofPoof`` smart contract
+    per active network.
+
+    Returns:
+        Optional[``AddressType``]: The address of the contract in the active network.
+    """
+
     network_name = get_network_name()
     network_deployments = config.deployments["ethereum"].get(network_name) or []
     if network_deployments:
         return [d for d in network_deployments if d["contract_type"] == "PoofPoof"][0]["address"]
     else:
-        click.echo(f"No address for network '{network_name}'.")
-        return None
+        click.echo(f"No address for network '{network_name}'.", err=True)
