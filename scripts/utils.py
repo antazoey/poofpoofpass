@@ -1,18 +1,17 @@
-import click
 from typing import Iterator, Optional
 
-from ape import accounts, networks, config
+import click
+from ape import accounts, config, networks
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
 from ape.types import AddressType
 from project_nft import NFTProject
-from pynata import create_pinata, Pinata
-
+from pynata import Pinata, create_pinata
 
 PROJECT_NAME = "poofpoof"
 
 
-def get_account(prompt: Optional[str]=None) -> AccountAPI:
+def get_account(prompt: Optional[str] = None) -> AccountAPI:
     """
     Get an account. If in a development environment, returns
     ``test_accounts[0]``. Otherwise, prompts the user to select
@@ -21,7 +20,7 @@ def get_account(prompt: Optional[str]=None) -> AccountAPI:
     Args:
         prompt (Optional[str]): The prompt to display to the user
           when selecting an account.
-    
+
     Returns:
         ``AccountAPI``: The selected account (``ape`` class).
     """
@@ -85,13 +84,15 @@ def get_poofpoof_address() -> Optional[AddressType]:
     network_name = get_network_name()
     network_deployments = config.deployments["ethereum"].get(network_name) or []
     if network_deployments:
-        return [d for d in network_deployments if d["contract_type"] == "PoofPoof"][0]["address"]
+        return [d for d in network_deployments if d["contract_type"] == "PoofPoof"][0][
+            "address"
+        ]
     else:
         click.echo(f"No address for network '{network_name}'.", err=True)
 
 
 def get_artwork_file_paths():
-    return 
+    return
 
 
 def get_token_receivers(token_id: int) -> Iterator[str]:
@@ -100,7 +101,5 @@ def get_token_receivers(token_id: int) -> Iterator[str]:
     """
     # TODO: Figure out how to populate token receivers list.
     _ = token_id
-    receivers = {
-        "lester": "0x4e3b9a9f52d66E62f596A7b8A258Aff9AeeB15C2"
-    }
+    receivers = {"lester": "0x4e3b9a9f52d66E62f596A7b8A258Aff9AeeB15C2"}
     yield from receivers.values()

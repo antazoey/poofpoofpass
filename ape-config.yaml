@@ -2,11 +2,13 @@ plugins:
   - name: solidity
 
 dependencies:
-  open_zeppelin: OpenZeppelin/openzeppelin-contracts@4.4.0
+  - name: OpenZeppelin
+    github: OpenZeppelin/openzeppelin-contracts
+    version: 4.4.0
 
-solidity:
+solidity: 
   import_remapping:
-    - "@openzeppelin=open_zeppelin/contracts"
+    - "@openzeppelin=OpenZeppelin/4.4.0"
 
 deployments:
   ethereum:

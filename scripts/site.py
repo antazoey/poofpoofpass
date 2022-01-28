@@ -1,6 +1,5 @@
-from flask import Flask
 import htmlmin
-
+from flask import Flask
 
 HTML = """
 <!DOCTYPE html>
@@ -25,7 +24,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-  return htmlmin.minify(HTML.strip(), remove_empty_space=True)
+    return htmlmin.minify(HTML.strip(), remove_empty_space=True)
 
 
 def main():
