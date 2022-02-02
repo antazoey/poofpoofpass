@@ -1,4 +1,4 @@
-from utils import pin_everything
+from .utils import pin_everything
 
 
 def main():

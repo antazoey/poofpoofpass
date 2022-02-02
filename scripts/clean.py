@@ -1,8 +1,12 @@
 import json
 from json.decoder import JSONDecodeError
 
-from utils import (DEPLOYMENT_MAP_PATH, PROJECT_NAME, create_pinata_client,
-                   get_artwork_file_paths)
+from .utils import (
+    DEPLOYMENT_MAP_PATH,
+    PROJECT_NAME,
+    create_pinata_client,
+    get_artwork_file_paths,
+)
 
 
 def clean_pins():

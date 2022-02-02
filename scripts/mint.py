@@ -1,5 +1,5 @@
 from ape import project
-from utils import get_account, get_latest_poofpoof_address, get_token_receivers
+from .utils import get_account, get_latest_poofpoof_address, get_token_receivers
 
 
 def mint():
