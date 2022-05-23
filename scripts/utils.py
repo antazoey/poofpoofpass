@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Iterator, Optional
 
 import click
@@ -5,8 +6,8 @@ from ape import accounts, config, networks
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
 from ape.types import AddressType
-from project_nft import NFTProject
-from pynata import Pinata, create_pinata
+from nft_project import NFTProject
+from pinata import Pinata, create_pinata
 
 PROJECT_NAME = "poofpoof"
 
@@ -26,7 +27,7 @@ def get_account(prompt: Optional[str] = None) -> AccountAPI:
     """
 
     prompt = prompt or "Select an account"
-    if get_network_name() == "development":
+    if get_network_name() == "local":
         return accounts.test_accounts[0]
 
     return get_user_selected_account(prompt_message=prompt)
@@ -91,8 +92,8 @@ def get_poofpoof_address() -> Optional[AddressType]:
         click.echo(f"No address for network '{network_name}'.", err=True)
 
 
-def get_artwork_file_paths():
-    return
+def get_artwork_files():
+    return [a for a in Path("artwork").iterdir()]
 
 
 def get_token_receivers(token_id: int) -> Iterator[str]:

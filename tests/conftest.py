@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import pytest
-from project_nft import NFTProject
-from pynata import create_pinata
+from nft_project import NFTProject
+from pinata import create_pinata
 
 NAME = "poofpoof"
 

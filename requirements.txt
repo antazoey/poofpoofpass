@@ -1,4 +1,4 @@
-eth-ape>=0.1.0b2
+eth-ape>=0.2.7
 pytest>=6.2.5,<7.0.0
 black>=21.5
 project-nft==0.1.0a1
